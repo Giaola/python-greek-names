@@ -11,7 +11,7 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=6.0', ]
+requirements = ['Click>=6.0', 'python-text-utils>=0.0.6']
 
 setup_requirements = ['pytest-runner', ]
 
@@ -32,7 +32,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
-    description="Python Boilerplate contains all the boilerplate you need to create a Python package.",
+    description="Python utils for working with names in Greek language.",
     entry_points={
         'console_scripts': [
             'python_greek_names=python_greek_names.cli:main',
