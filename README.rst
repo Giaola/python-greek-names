@@ -2,18 +2,8 @@
 Python Greek Names
 ==================
 
-
-.. image:: https://img.shields.io/pypi/v/python_greek_names.svg
-        :target: https://pypi.python.org/pypi/python_greek_names
-
-.. image:: https://img.shields.io/travis/g20ready/python_greek_names.svg
-        :target: https://travis-ci.org/g20ready/python_greek_names
-
-.. image:: https://readthedocs.org/projects/python-greek-names/badge/?version=latest
-        :target: https://python-greek-names.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
-
+.. image:: https://badge.fury.io/py/python-greek-names.svg
+        :target: https://badge.fury.io/py/python-greek-names
 
 
 Python Boilerplate contains all the boilerplate you need to create a Python package.
