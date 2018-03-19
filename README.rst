@@ -10,18 +10,64 @@ Python Boilerplate contains all the boilerplate you need to create a Python pack
 
 
 * Free software: MIT license
-* Documentation: https://python-greek-names.readthedocs.io.
 
+Installation
+------------
 
-Features
---------
+You can install via pypi
 
-* TODO
+.. code-block::
+    pip install python-greek-names
+.. code-block::
+
+Usage
+-----
+
+Create a mapper instance and use it across your code.
+
+Mapper have the rules needed to transform the name to
+the desired case and the exception to the rule.
+
+.. code-block:: python
+    from python_greek_names.utils import GenitiveMapper
+
+    gm = GenitiveMapper()
+    gm.as_case('Αγάπιος')
+.. code-block::
+
+Convert to upper case or strip accent by setting the mapper params.
+
+.. code-block:: python
+    gm = GenitiveMapper(upper=True)
+    gm = GenitiveMapper(accent=False)
+.. code-block::
+
+Or provide your own exception list for names that I may have omitted.
+
+.. code-block:: python
+    gm = GenitiveMapper(extra_exceptions={
+        'Ανακρέων': 'Ανακρέοντα'
+    })
+.. code-block::
+
+This package provides 2 mapper classes GenitiveMapper & VocativeMapper but feel free to implement your own mapper class
+by subclassing the base Mapper class and providing your endings and exceptions.
+
+.. code-block:: python
+    class SomeRandomMapper(Mapper):
+
+        _ending_mappings = {
+            'boo': 'foo',
+            'ool': 'ewl'
+        }
+
+        _exceptions = {
+            'cool': 'kewl'
+        }
+.. code-block::
 
 Credits
 -------
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
+Marsel Tzatzo for Giaola
 
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
