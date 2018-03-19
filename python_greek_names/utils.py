@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
 """Provides utility functions for working with greek names."""
+from __future__ import unicode_literals
+
+from copy import deepcopy
+from six import iteritems
+
 from python_text_utils.greek import Greek
 from python_text_utils.generic import Generic
-
 
 __vocative_endings = {
     'ιος': 'ιε',
@@ -11,66 +15,123 @@ __vocative_endings = {
     'λος': 'λε',
     'αος': 'αε',
     'νος': 'νε',
+    'ων': 'ωνα'
 }
 
 __vocative_default_exceptions = {
+    'αγαθόνικος': 'αγαθόνικε',
+    'αμαρυλλίς': 'αμαρυλλίς',
+    'ανακρέων': 'ανακρέοντα',
     'παύλος': 'παύλο',
     'θάνος': 'θάνο',
     'αλέξανδρος': 'αλέξανδρε',
-    'αμαρυλλίς': 'αμαρυλλίς'
 }
 
 
-def as_vocative(name, upper=False, accent=True, extra_exceptions=None):
+class Mapper(object):
     """
-    Transforms greek name to its vocative representation.
-
-    Args:
-        name(str): Nominative representation of the name.
-        upper(bool): If set the name will be returned in uppercase otherwise it will be capitalized.
-        accent(bool): If set to False accent will be stripped off the string.
-        extra_exceptions(dict): Dictionary with extra exceptions to look for before the algorithm starts.
-                                The dictionary's keys and values should both be unicode strings.
-
-    Returns:
-        str: Vocative representation of the name.
+    Base class for mapping greek names to their case
     """
-    name = Generic.to_unicode(name).lower()
+    _ending_mappings = {}
+    _exceptions = {}
 
-    if not accent:
-        name = Greek.strip_accent_unicode(name)
+    def __init__(self, upper=False, accent=True, extra_exceptions=None):
+        """
 
-    # First check if the current name is an exception to the rules
-    if name in __vocative_default_exceptions:
-        return normalize_name(__vocative_default_exceptions[name], upper)
+        Args:
+            upper:
+            accent:
+            extra_exceptions:
+        """
+        self.upper = upper
+        self.accent = accent
 
-    # Get the match and the collection we found the match
-    key = [key
-           for key in [name[-3], name[-4]]
-           if key in __vocative_endings.keys()]
+        assert (extra_exceptions is None or isinstance(extra_exceptions, dict))
+        self.extra_exceptions = extra_exceptions
+        self.__initialize()
 
-    if key:
-        return normalize_name(name.replace(key, __vocative_endings[key]), upper)
+    def __initialize(self):
+        """
+        Updates the exceptions with the extra exceptions given.
+        """
+        self.exceptions = deepcopy(self._exceptions)
+        if not self.accent:
+            self.exceptions = {
+                Greek.strip_accent_unicode(key): Greek.strip_accent_unicode(value)
+                for key, value in iteritems(self.exceptions)
+            }
+        if self.extra_exceptions:
+            if not self.accent:
+                self.extra_exceptions = {
+                    Greek.strip_accent_unicode(key): Greek.strip_accent_unicode(value)
+                    for key, value in iteritems(self.extra_exceptions)
+                }
+            self.exceptions.update(self.extra_exceptions)
 
-    # Check if name ends in S, If so strip the S
-    if name[-1].upper() == 'Σ':
-        return normalize_name(name[:-1], upper)
+    def as_case(self, name):
+        """
+        Args:
+            name: Name to return case for
+        Returns:
+            str: Case of the name
+        """
+        # If accent is disabled remove accent from name
+        if not self.accent:
+            name = Greek.strip_accent_unicode(name)
 
-    return name
+        # First check if the current name is an exception to the rules
+        if name in self.exceptions:
+            return normalize_name(self.exceptions[name], self.upper)
+
+        # Get the match and the collection we found the match
+        for key in [name[-3:], name[-4:]]:
+            if key in self._ending_mappings:
+                return normalize_name(name.replace(key, self._ending_mappings[key]),
+                                      self.upper)
+
+        # Check if name ends in S, If so strip the S
+        if name[-1].upper() == 'Σ':
+            return normalize_name(name[:-1], self.upper)
+
+        return normalize_name(name, self.upper)
 
 
-def as_genitive(name):
-    """
-    Transforms greek name to its genitive representation.
+class VocativeMapper(Mapper):
+    _ending_mappings = {
+        'ιος': 'ιε',
+        'μπος': 'μπε',
+        'λος': 'λε',
+        'αος': 'αε',
+        'νος': 'νε',
+        'ων': 'ωνα'
+    }
 
-    Args:
-        name:
+    _exceptions = {
+        'αγαθόνικος': 'αγαθόνικε',
+        'αμαρυλλίς': 'αμαρυλλίς',
+        'ανακρέων': 'ανακρέοντα',
+        'παύλος': 'παύλο',
+        'θάνος': 'θάνο',
+        'αλέξανδρος': 'αλέξανδρε',
+    }
 
-    Returns:
-        str: Genitive representation of the name.
 
-    """
-    return None
+class GenitiveMapper(Mapper):
+
+    _ending_mappings = {
+        'ιος': 'ιου',
+        'μπος': 'μπου',
+        'κος': 'κου',
+        'λος': 'λου',
+        'αος': 'αου',
+        'νος': 'νου',
+        'τος': 'του'
+    }
+
+    _exceptions = {
+        'αμαρυλλίς': 'αμαρυλλίς',
+        'αλέξανδρος': 'αλέξανδρου'
+    }
 
 
 def normalize_name(name, upper=False):
@@ -86,4 +147,4 @@ def normalize_name(name, upper=False):
     name = Generic.to_unicode(name)
     if upper:
         return name.upper()
-    return name.capitalize()
+    return Generic.to_unicode(name.capitalize())
