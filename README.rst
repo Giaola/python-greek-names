@@ -33,14 +33,12 @@ the desired case and the exception to the rule.
 
     gm = GenitiveMapper()
     gm.as_case('Αγάπιος')
-.. code-block::
 
 Convert to upper case or strip accent by setting the mapper params.
 
 .. code-block:: python
     gm = GenitiveMapper(upper=True)
     gm = GenitiveMapper(accent=False)
-.. code-block::
 
 Or provide your own exception list for names that I may have omitted.
 
@@ -48,7 +46,7 @@ Or provide your own exception list for names that I may have omitted.
     gm = GenitiveMapper(extra_exceptions={
         'Ανακρέων': 'Ανακρέοντα'
     })
-.. code-block::
+
 
 This package provides 2 mapper classes GenitiveMapper & VocativeMapper but feel free to implement your own mapper class
 by subclassing the base Mapper class and providing your endings and exceptions.
@@ -64,10 +62,10 @@ by subclassing the base Mapper class and providing your endings and exceptions.
         _exceptions = {
             'cool': 'kewl'
         }
-.. code-block::
 
 Credits
 -------
 
 Marsel Tzatzo for Giaola
+
 
