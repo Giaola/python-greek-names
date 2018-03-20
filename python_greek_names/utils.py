@@ -9,24 +9,6 @@ from six import iteritems
 from python_text_utils.greek import Greek
 from python_text_utils.generic import Generic
 
-__vocative_endings = {
-    'ιος': 'ιε',
-    'μπος': 'μπε',
-    'λος': 'λε',
-    'αος': 'αε',
-    'νος': 'νε',
-    'ων': 'ωνα'
-}
-
-__vocative_default_exceptions = {
-    'αγαθόνικος': 'αγαθόνικε',
-    'αμαρυλλίς': 'αμαρυλλίς',
-    'ανακρέων': 'ανακρέοντα',
-    'παύλος': 'παύλο',
-    'θάνος': 'θάνο',
-    'αλέξανδρος': 'αλέξανδρε',
-}
-
 
 class Mapper(object):
     """
